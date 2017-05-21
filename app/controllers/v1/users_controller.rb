@@ -6,12 +6,13 @@ module V1
     # constants
     STRONG_PARAMETERS = [ :name, :email, :avatar, :surnames => [], :phones => [] ]
 
+    # deactivated, only for admin users in the future
     # GET v1/users
-    def index
-      @users = User.all
+    # def index
+    #   @users = User.all
 
-      json_response(@users, status: :ok)
-    end
+    #   json_response(@users, status: :ok)
+    # end
 
     # GET v1/users/1
     def show
@@ -20,7 +21,9 @@ module V1
 
     # POST v1/users
     def create
-      @user = User.create!(user_params)
+      @user = User.duplicate(user_params[:name],
+                  user_params[:surnames],
+                  user_params[:email]).first || User.create!(user_params)
 
       json_response(@user, status: :created, location: v1_user_url(@user))
     end
@@ -36,14 +39,14 @@ module V1
     end
 
     private
-      # Use callbacks to share common setup or constraints between actions.
-      def set_user
-        @user = User.find(params[:id])
-      end
+    # Use callbacks to share common setup or constraints between actions.
+    def set_user
+      @user = User.find(params[:id])
+    end
 
-      # Only allow a trusted parameter "white list" through.
-      def user_params
-        params.require(:user).permit(STRONG_PARAMETERS)
-      end
+    # Only allow a trusted parameter "white list" through.
+    def user_params
+      params.require(:user).permit(STRONG_PARAMETERS)
+    end
   end
 end

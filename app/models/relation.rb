@@ -13,8 +13,9 @@ class Relation < ApplicationRecord
   #validations
   validates :user_id, :contact_id, :_type, presence: true
   validates :user_id, :contact_id, numericality: true
-  validate :is_duplicated?
+  validate :is_duplicated?, on: :create
   validate :exist_user_references?
+  validate :autoreferer
   # enum _type has his own validation inclusion
 
   #vars
@@ -34,6 +35,12 @@ class Relation < ApplicationRecord
       rescue ActiveRecord::RecordNotFound => e
         errors.add(key, e.message)
       end
+    end
+  end
+
+  def autoreferer
+    if self.user_id == self.contact_id
+      errors.add(:user_id, "References have the same id")
     end
   end
 

@@ -106,6 +106,28 @@ RSpec.describe User, type: :model do
       end
     end
 
+    context 'duplicate scope' do
+      before { create_basic_relation }
+
+      context 'when a user exists in ddbb' do
+        it 'should return a duplicate' do
+          expect(
+            User.duplicate(
+              valid_user_attributes['name'],
+              valid_user_attributes['surnames'],
+              valid_user_attributes['email']
+              )
+          ).to be_any
+        end
+      end
+
+      context 'when a user doesnt exists in ddbb' do
+        it 'should dont return a duplicate' do
+          expect(User.duplicate('Lolo',['lalala'],'test@gmail.com')).to be_empty
+        end
+      end
+    end
+
   end
 
   #instance methods

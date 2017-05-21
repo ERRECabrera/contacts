@@ -43,9 +43,9 @@ RSpec.describe Relation, type: :model do
     it {
       first_time_direct = valid_user.create_relation(valid_type_relation,valid_contact.id)
       #first_time_inverse relation is auto created
+      expect(first_time_direct).to be_truthy
       second_time_direct = valid_user.create_relation(valid_type_relation,valid_contact.id)
       second_time_inverse = valid_contact.create_relation(valid_type_relation,valid_user.id)
-      expect(first_time_direct).to be_truthy
       expect(second_time_direct).to be_falsey
       expect(second_time_inverse).to be_falsey
     }
@@ -63,6 +63,10 @@ RSpec.describe Relation, type: :model do
     it { should_not allow_value(invalid_user_id).for(:user_id) }
     it { should_not allow_value(invalid_contact_id).for(:contact_id) }
     it { expect{ invalid_relation_by_type }.to raise_error ArgumentError }
+    it { user = valid_user
+         expect(Relation.new(user_id: user.id,
+         contact_id: user.id,
+         _type:'family')).to be_invalid }
 
   end
 

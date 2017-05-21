@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   #relations
-  has_many :relations
+  has_many :relations, dependent: :destroy
   has_many :contacts, source: :contact, through: :relations
   has_many :friends, -> { where "_type = 0" }, source: :contact, through: :relations
   has_many :family, -> { where "_type = 1" }, source: :contact, through: :relations
@@ -33,6 +33,9 @@ class User < ApplicationRecord
   #scopes
   scope :named, -> (name) { where(name: name) }
   scope :surnamed, -> (surnames) { where("surnames && ARRAY[?]::varchar[]",surnames) }
+  scope :equal_identity, -> (name,surnames) { self.named(name).merge(self.surnamed(surnames)) }
+  scope :equal_email, -> (email) { self.where(email: email) }
+  scope :duplicate, -> (name,surnames,email) { self.equal_identity(name,surnames).merge(self.equal_email(email)) }
 
   #model methods
   def create_relation(type,new_contact_id)
@@ -47,5 +50,17 @@ class User < ApplicationRecord
     Relation.find_by(user_id: self.id, contact_id: contact_id)
     #return relation or nil
   end
+
+  # def has_equal_identity?
+  #   User.named(self.name).surnamed(self.surnames)
+  # end
+
+  # def has_equal_email?
+  #   User.find_by(email: self.email)
+  # end
+
+  # def get_duplicate
+  #   return equal_identity or equal_email
+  # end
 
 end
