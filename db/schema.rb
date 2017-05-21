@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518212303) do
+ActiveRecord::Schema.define(version: 20170520200929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "relations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "contact_id"
+    t.integer "_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["_type"], name: "index_relations_on__type"
+    t.index ["user_id"], name: "index_relations_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name"
@@ -25,4 +35,5 @@ ActiveRecord::Schema.define(version: 20170518212303) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "relations", "users"
 end
