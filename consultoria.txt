@@ -1,0 +1,11 @@
+Propuesta de arquitectura de microservicios para 'Agenda de Contactos'.
+
+La tecnología de contenedores Docker es ideal para el mantenimiento y la gestión de microservicios. Permitiendo un escalado balanceado con los recursos disponibles en el sistema donde reside. Compartiendo de la manera más eficaz el espacio en disco, CPU, memoria, etc. Así mismo la autogestión que se puede conseguir de esos mismos sistemas a través de la correcta configuración de sus nodos, redes y clústers también lo hace tremendamente tolerable a fallos.
+
+Pero eso no significa que los microservicios sean la solución a todos los males, dado que, por ejemplo, añaden latencia en todas sus posibles comunicaciones.
+
+Personalmente en el caso que nos ocupa destacaría como el elemento más importante en el sistema a la Base de datos, dado que una Agenda de Contactos no plantea excesivos requerimientos de complicados procesamientos en Backend. Ni tampoco exigue complicadísimos cruces de tablas y datos para recuperar la información. Pero sí demanda de espacio de almacenamiento como algo elemental.
+
+Así mismo, el tipo de funcionalidad básica de una agenda de contactos premia la sencillez en la interfaz gráfica, lo que podría aprovecharse para ceder parte de la gestión de los datos al frontend y estableciendo la ingesta de información de la aplicación a través de una API. Y si aún así queremos aligerar el número de peticiones a nuestras máquinas, yo propondría servir nuestros assets desde un sistema de CDN distribuidos.
+
+En resumen, propongo una aplicación frontend que apunte a una API que gestione la escritura y lectura en BBDD. Dicha aplicación estaría servida desde un servidor distinto al de la API y a si mismo serviría nuestras imágenes y assets desde un sistema de CDN externo.
